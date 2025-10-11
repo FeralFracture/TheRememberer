@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/TheRememberer.sln
+
+# added
+
+appsettings.Development.json
