@@ -364,5 +364,4 @@ FodyWeavers.xsd
 /TheRememberer.sln
 
 # added
-
-appsettings.Development.json
+**/appsettings.Development.json
