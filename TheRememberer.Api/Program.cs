@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TheRememberer.Infrastructure.Data;
+using TheRememberer.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+builder.Services.AddSingleton<BlobStorageService>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

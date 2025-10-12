@@ -1,10 +1,13 @@
 ﻿namespace TheRememberer.Objects.Entities
 {
-    public class Image
+    public class Image : EntityBase
     {
-        public int Id { get; set; }  // EF automatically treats 'Id' as primary key
-        public string Image_Name { get; set; } = string.Empty;
-        public string File_Name { get; set; } = string.Empty;
-        public DateTime Uploaded_At { get; set; } = DateTime.UtcNow;
+        public string ImageName { get; set; } = string.Empty;
+        public string FileName { get; set; } = string.Empty;
+        public Guid UploaderId { get; set; }
+        public User Uploader { get; set; } = null!;
+
+
+        public ICollection<ImageTag> ImageTags { get; set; } = new List<ImageTag>();
     }
 }
