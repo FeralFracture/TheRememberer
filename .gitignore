@@ -365,3 +365,4 @@ FodyWeavers.xsd
 
 # added
 **/appsettings.Development.json
+ef-migrate.bat

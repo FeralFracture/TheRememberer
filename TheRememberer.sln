@@ -11,8 +11,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRememberer.Api", "TheRememberer.Api\TheRememberer.Api.csproj", "{F1716F9B-3C09-D783-44AF-BA8108FF2EF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRememberer.Application", "TheRememberer.Application\TheRememberer.Application.csproj", "{11A4F1D5-FCC1-9782-0187-9FCA022BEB40}"
+	ProjectSection(ProjectDependencies) = postProject
+		{722CA220-2E5C-2D7B-47DA-7BB4F26F1893} = {722CA220-2E5C-2D7B-47DA-7BB4F26F1893}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRememberer.Infrastructure", "TheRememberer.Infrastructure\TheRememberer.Infrastructure.csproj", "{E7876CE9-FF1E-690A-4D4C-DDDBDEF47D25}"
+	ProjectSection(ProjectDependencies) = postProject
+		{722CA220-2E5C-2D7B-47DA-7BB4F26F1893} = {722CA220-2E5C-2D7B-47DA-7BB4F26F1893}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRememberer.Objects", "TheRememberer.Objects\TheRememberer.Objects.csproj", "{722CA220-2E5C-2D7B-47DA-7BB4F26F1893}"
 EndProject
