@@ -10,7 +10,7 @@ namespace TheRememberer.Objects.Interfaces.Bases
     {
         IEnumerable<TDto> GetAll();
         TDto? Get(Guid id);
-        void Upsert(TDto model, Expression<Func<TEntity, bool>>? matchPredicate = null);
+        Guid? Upsert(TDto model, Expression<Func<TEntity, bool>>? matchPredicate = null);
         void Delete(TDto? model);
         void Delete(Guid id);
     }

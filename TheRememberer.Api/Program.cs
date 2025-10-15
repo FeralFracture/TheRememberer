@@ -7,6 +7,7 @@ using TheRememberer.Infrastructure.Services;
 using TheRememberer.Objects;
 using TheRememberer.Objects.Interfaces;
 using Microsoft.OpenApi.Models;
+using TheRememberer.Objects.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,10 +36,13 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<BlobStorageService>();
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserBiz, UserBiz>();
+builder.Services.AddScoped<IUser_DiscordRepo, User_DiscordRepo>();
+builder.Services.AddScoped<IUser_DiscordBiz, User_DiscordBiz>();
 
 builder.Services.AddAutoMapper(cfg =>
 {

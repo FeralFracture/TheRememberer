@@ -9,7 +9,7 @@ namespace TheRememberer.Application
         where TEntity : EntityBase, new()
         where TDto : DtoBase, new()
         where TRepo : IRepoBase<TEntity, TDto>
-        
+
 
     {
         protected readonly TRepo _repo;
@@ -33,6 +33,9 @@ namespace TheRememberer.Application
             return _repo.GetAll();
         }
 
-        public void Upsert(TDto model, Expression<Func<TEntity, bool>>? matchPredicate = null) => _repo.Upsert(model, matchPredicate);
+        public Guid? Upsert(TDto model, Expression<Func<TEntity, bool>>? matchPredicate = null)
+        {
+            return _repo.Upsert(model, matchPredicate);
+        }
     }
 }

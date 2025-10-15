@@ -87,13 +87,15 @@ namespace TheRememberer.Infrastructure.Repos
             return _mapper.Map<IEnumerable<TDto>>(entities);
         }
 
-        public virtual void Upsert(TDto dto, Expression<Func<TEntity, bool>>? matchPredicate = null)
+        public virtual Guid? Upsert(TDto dto, Expression<Func<TEntity, bool>>? matchPredicate = null)
         {
             var transaction = _context.Database.CurrentTransaction == null ? _context.Database.BeginTransaction() : null;
+
             try
             {
                 TEntity? entity = null;
                 dto.UpdatedAt = DateTime.UtcNow;
+
                 if (matchPredicate != null)
                 {
                     entity = _context.Set<TEntity>().FirstOrDefault(matchPredicate);
@@ -102,6 +104,7 @@ namespace TheRememberer.Infrastructure.Repos
                 if (entity == null)
                 {
                     entity = _mapper.Map<TEntity>(dto);
+                    entity.CreatedAt = DateTime.UtcNow;
                     _context.Set<TEntity>().Add(entity);
                 }
                 else
@@ -111,6 +114,8 @@ namespace TheRememberer.Infrastructure.Repos
 
                 _context.SaveChanges();
                 _context.Database.CommitTransaction();
+
+                return entity.Id;
             }
             catch
             {
@@ -118,6 +123,7 @@ namespace TheRememberer.Infrastructure.Repos
                 throw;
             }
         }
+
         private object GetPrimaryKey(TEntity entity)
         {
             var keyProperties = _context.Model.FindEntityType(typeof(TEntity))!.FindPrimaryKey()!.Properties;

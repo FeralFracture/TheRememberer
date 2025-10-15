@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRememberer.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRememberer.Objects", "TheRememberer.Objects\TheRememberer.Objects.csproj", "{722CA220-2E5C-2D7B-47DA-7BB4F26F1893}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRemember.Tests", "TheRemember.Tests.Objects\TheRemember.Tests.csproj", "{48BE28A7-6256-4754-B35F-2645984133D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{722CA220-2E5C-2D7B-47DA-7BB4F26F1893}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{722CA220-2E5C-2D7B-47DA-7BB4F26F1893}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{722CA220-2E5C-2D7B-47DA-7BB4F26F1893}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48BE28A7-6256-4754-B35F-2645984133D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48BE28A7-6256-4754-B35F-2645984133D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48BE28A7-6256-4754-B35F-2645984133D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48BE28A7-6256-4754-B35F-2645984133D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

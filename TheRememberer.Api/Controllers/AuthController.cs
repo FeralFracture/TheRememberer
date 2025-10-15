@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using TheRememberer.Objects.DTOs;
+using TheRememberer.Objects.Entities;
 using TheRememberer.Objects.Interfaces;
+using TheRememberer.Objects.Interfaces.Services;
 
 namespace TheRememberer.Api.Controllers
 {
@@ -10,10 +12,14 @@ namespace TheRememberer.Api.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IUserBiz _userBiz;
-        public AuthController(ILogger<AuthController> logger, IConfiguration config, IUserBiz userBiz) : base(logger)
+        private readonly IUser_DiscordBiz _discordBiz;
+        private readonly IJwtService _jwtService;
+        public AuthController(ILogger<AuthController> logger, IConfiguration config, IUserBiz userBiz, IUser_DiscordBiz discordBiz, IJwtService jwtService) : base(logger)
         {
             _config = config;
             _userBiz = userBiz;
+            _discordBiz = discordBiz;
+            _jwtService = jwtService;
         }
 
         [HttpGet("Discord", Name = "DiscordOAuth")]
@@ -34,8 +40,12 @@ namespace TheRememberer.Api.Controllers
         public async Task<IActionResult> Callback(string code, string state)
         {
             var expectedState = HttpContext.Session.GetString("oauth_state");
+
             if (state != expectedState)
                 return BadRequest("Invalid state");
+            HttpContext.Session.Remove("oauth_state");
+
+
             var discordConfigs = _config.GetSection("DiscordInformation");
             // Exchange code for tokens
             using var client = new HttpClient();
@@ -47,32 +57,50 @@ namespace TheRememberer.Api.Controllers
                 ["client_id"] = discordConfigs["ClientId"]!,
                 ["client_secret"] = discordConfigs["ClientSecret"]!,
             }));
-            var content = await tokenResponse.Content.ReadAsStringAsync();
-            var response = JsonSerializer.Deserialize<DiscordTokenResponse>(content);
+            var tokenContent = await tokenResponse.Content.ReadAsStringAsync();
+            if (!tokenResponse.IsSuccessStatusCode)
+                return BadRequest("Failed to exchange code for token");
+
+            var tokenParsed = JsonSerializer.Deserialize<DiscordTokenResponse>(tokenContent);
 
             client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", response!.AccessToken);
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenParsed!.AccessToken);
             client.DefaultRequestHeaders.UserAgent.ParseAdd("TheRemembererApp/1.0 (localhost; CSharpHttpClient)");
 
             var dataResponse = await client.GetAsync($"{discordConfigs["ApiURL"]}/users/@me");
             var dataContent = await dataResponse.Content.ReadAsStringAsync();
-
             using var doc = JsonDocument.Parse(dataContent);
-            var root = doc.RootElement;
-            var userData = new UserDto
+            var dataJson = doc.RootElement;
+
+            var userId = _userBiz.Upsert(new UserDto());
+            var user = _userBiz.Get(userId!.Value);
+
+            var accessToken = _jwtService.CreateAccessToken(user!.DbId!.Value);
+            var refreshToken = _jwtService.CreateRefreshToken();
+
+            user.AccessToken = accessToken;
+            user.RefreshToken = refreshToken;
+            user.TokenExpiration = DateTime.UtcNow.AddMinutes(15);
+            user.UpdatedAt = DateTime.UtcNow;
+
+
+            var discordData = new User_DiscordDto
             {
-                DiscordId = ulong.Parse(root.GetProperty("id").GetString()!, System.Globalization.CultureInfo.InvariantCulture),
-                DisplayName = root.GetProperty("global_name").GetString()!,
-                UserName = root.GetProperty("username").GetString()!,
-                AvatarHash = root.GetProperty("avatar").ToString()!,
-                AccessToken = response!.AccessToken,
-                RefreshToken = response!.RefreshToken,
-                TokenExpiration = DateTime.UtcNow.AddSeconds(response!.ExpiresIn)
+                AccessToken = tokenParsed!.AccessToken,
+                RefreshToken = tokenParsed!.RefreshToken,
+                TokenExpiration = DateTime.UtcNow.AddSeconds(tokenParsed!.ExpiresIn),
+                AvatarHash = dataJson.GetProperty("avatar").ToString()!,
+                DiscordId = ulong.Parse(dataJson.GetProperty("id").GetString()!, System.Globalization.CultureInfo.InvariantCulture),
+                DisplayName = dataJson.GetProperty("global_name").GetString()!,
+                UserName = dataJson.GetProperty("username").GetString()!,
+                UserId = userId!.Value,
             };
-            _userBiz.Upsert(userData);
+
+            discordData.DbId = _discordBiz.Upsert(discordData);
 
             return Ok();
         }
+
         [HttpGet("TEST/DISCORD", Name = "DiscordData")]
         public async Task<IActionResult> GetInfo()
         {

@@ -1,10 +1,11 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
+using TheRememberer.Objects.Interfaces.Services;
 
 namespace TheRememberer.Infrastructure.Services
 {
-    public class BlobStorageService
+    public class BlobStorageService : IBlobStorageService
     {
         private readonly BlobContainerClient _containerClient;
         public BlobStorageService(IConfiguration configuration)

@@ -12,7 +12,7 @@ namespace TheRememberer.Objects.Interfaces.Bases
         bool Contains(Expression<Func<TEntity, bool>> expression);
         TDto? GetByGUID(Guid id);
         IEnumerable<TDto> SelectBy(Expression<Func<TEntity, bool>> expression);
-        void Upsert(TDto model, Expression<Func<TEntity, bool>>? matchPredicate = null);
+        Guid? Upsert(TDto model, Expression<Func<TEntity, bool>>? matchPredicate = null);
         void Delete(TDto? model);
         void Delete(Guid id);
     }
