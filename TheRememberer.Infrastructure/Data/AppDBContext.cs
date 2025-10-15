@@ -11,6 +11,7 @@ namespace TheRememberer.Infrastructure.Data
         public DbSet<Image> Images => Set<Image>();
         public DbSet<Tag> Tags => Set<Tag>();
         public DbSet<ImageTag> ImageTags => Set<ImageTag>();
+        public DbSet<User_Discord> DiscordUsers => Set<User_Discord>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,8 +31,13 @@ namespace TheRememberer.Infrastructure.Data
                 .WithMany(t => t.ImageTags)
                 .HasForeignKey(it => it.TagId);
 
-            // Optional: configure string lengths, indexes, etc.
             modelBuilder.Entity<User>()
+                .HasOne(u => u.DiscordData)
+                .WithOne(d => d.User)
+                .HasForeignKey<User_Discord>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User_Discord>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
         }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheRememberer.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using TheRememberer.Infrastructure.Data;
 namespace TheRememberer.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251014222046_DiscordOauthMigrationTable")]
+    partial class DiscordOauthMigrationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,6 +110,9 @@ namespace TheRememberer.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("DiscordDbID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("RefreshToken")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -174,7 +180,7 @@ namespace TheRememberer.Infrastructure.Migrations
             modelBuilder.Entity("TheRememberer.Objects.Entities.Image", b =>
                 {
                     b.HasOne("TheRememberer.Objects.Entities.User", "Uploader")
-                        .WithMany("UploadedImages")
+                        .WithMany()
                         .HasForeignKey("UploaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -225,8 +231,6 @@ namespace TheRememberer.Infrastructure.Migrations
             modelBuilder.Entity("TheRememberer.Objects.Entities.User", b =>
                 {
                     b.Navigation("DiscordData");
-
-                    b.Navigation("UploadedImages");
                 });
 #pragma warning restore 612, 618
         }

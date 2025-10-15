@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheRememberer.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using TheRememberer.Infrastructure.Data;
 namespace TheRememberer.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251014091252_Update_User_table_For_Discord_Data")]
+    partial class Update_User_table_For_Discord_Data
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,31 +107,6 @@ namespace TheRememberer.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("TheRememberer.Objects.Entities.User_Discord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AccessToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("AvatarHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -153,22 +131,16 @@ namespace TheRememberer.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("DiscordUsers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TheRememberer.Objects.Entities.Image", b =>
@@ -201,17 +173,6 @@ namespace TheRememberer.Infrastructure.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("TheRememberer.Objects.Entities.User_Discord", b =>
-                {
-                    b.HasOne("TheRememberer.Objects.Entities.User", "User")
-                        .WithOne("DiscordData")
-                        .HasForeignKey("TheRememberer.Objects.Entities.User_Discord", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TheRememberer.Objects.Entities.Image", b =>
                 {
                     b.Navigation("ImageTags");
@@ -224,8 +185,6 @@ namespace TheRememberer.Infrastructure.Migrations
 
             modelBuilder.Entity("TheRememberer.Objects.Entities.User", b =>
                 {
-                    b.Navigation("DiscordData");
-
                     b.Navigation("UploadedImages");
                 });
 #pragma warning restore 612, 618

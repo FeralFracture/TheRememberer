@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TheRememberer.Infrastructure\TheRememberer.Infrastructure.csproj" />
+    <ProjectReference Include="..\TheRememberer.Objects\TheRememberer.Objects.csproj" />
+  </ItemGroup>
+
 </Project>
